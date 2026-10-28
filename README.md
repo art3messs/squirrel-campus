@@ -2,6 +2,8 @@
 
 > *"Survive the semester. Dodge the Frisbees. Conquer the Quad."*
 
+🎮 **Play Online Directly in Your Browser:** **[https://art3messs.github.io/squirrel-campus/](https://art3messs.github.io/squirrel-campus/)**
+
 Welcome to **SquirrelCampus Engine**! I built this project to combine two things I love: **unhinged emergent RPG gameplay** and **agentic LLM function calling architecture**. 
 
 In SquirrelCampus, you don't play as a knight or a space marine. You play as an ambitious, hyperactive campus squirrel trying to survive an unforgiving college semester, out-scheme your arch-rival **Barnaby "One-Nut" McFluff**, and stash away 50 delicacies before the brutal winter frost sets in.
