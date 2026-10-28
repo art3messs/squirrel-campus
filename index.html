@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐿️ SquirrelCampus Engine - Play Online</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%3E<text y=%2226%22 font-size=%2226%22>🐿️</text></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Fredoka', cursive, sans-serif; }
+    .mono { font-family: 'Fira Code', monospace; }
+    @keyframes pulse-slow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.02); }
+    }
+    .threat-card { animation: pulse-slow 2s infinite ease-in-out; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center p-4 selection:bg-amber-500 selection:text-slate-900">
+
+  <!-- Header -->
+  <header class="w-full max-w-4xl text-center my-6">
+    <div class="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 px-4 py-1.5 rounded-full text-amber-400 text-sm mono mb-3">
+      <span>● AGENTIC RPG &amp; FUNCTION-CALLING ENGINE</span>
+    </div>
+    <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-amber-400 flex items-center justify-center gap-3">
+      <span>🐿️</span> SquirrelCampus Engine <span>🌰</span>
+    </h1>
+    <p class="text-slate-400 text-lg mt-2">Survive the semester. Dodge the Frisbees. Conquer the Quad.</p>
+  </header>
+
+  <!-- Main Game Container -->
+  <main class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+    <!-- Left Column: Status & Stats -->
+    <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col gap-5 shadow-xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h2 class="text-xl font-bold text-slate-200">Squirrel Stats</h2>
+        <span id="turn-badge" class="mono text-xs bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-md font-semibold border border-emerald-500/30">Turn 1</span>
+      </div>
+
+      <!-- Location -->
+      <div>
+        <div class="text-xs text-slate-400 mono uppercase tracking-wider">Current Turf</div>
+        <div id="stat-location" class="font-bold text-emerald-400 text-lg mt-0.5">The Main Quad Oak Tree</div>
+      </div>
+
+      <!-- Belly Fullness -->
+      <div>
+        <div class="flex justify-between text-sm mb-1">
+          <span class="text-slate-300">🥪 Belly Fullness</span>
+          <span id="label-fullness" class="mono font-semibold text-amber-400">50 / 100</span>
+        </div>
+        <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden border border-slate-700">
+          <div id="bar-fullness" class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: 50%"></div>
+        </div>
+      </div>
+
+      <!-- Agility -->
+      <div>
+        <div class="flex justify-between text-sm mb-1">
+          <span class="text-slate-300">⚡ Agility Reflexes</span>
+          <span id="label-agility" class="mono font-semibold text-sky-400">50 / 100</span>
+        </div>
+        <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden border border-slate-700">
+          <div id="bar-agility" class="bg-sky-500 h-full rounded-full transition-all duration-500" style="width: 50%"></div>
+        </div>
+      </div>
+
+      <!-- Campus Notoriety -->
+      <div>
+        <div class="flex justify-between text-sm mb-1">
+          <span class="text-slate-300">😎 TikTok Notoriety</span>
+          <span id="label-notoriety" class="mono font-semibold text-purple-400">10 / 100</span>
+        </div>
+        <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden border border-slate-700">
+          <div id="bar-notoriety" class="bg-purple-500 h-full rounded-full transition-all duration-500" style="width: 10%"></div>
+        </div>
+      </div>
+
+      <!-- Winter Hoard -->
+      <div class="bg-slate-950 p-4 rounded-xl border border-amber-500/20">
+        <div class="flex justify-between text-sm mb-1">
+          <span class="text-amber-300 font-bold">🌰 The Winter Hoard</span>
+          <span id="label-hoard" class="mono font-bold text-amber-400">0 / 50</span>
+        </div>
+        <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden border border-slate-700">
+          <div id="bar-hoard" class="bg-gradient-to-r from-amber-500 to-emerald-400 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+        <p class="text-xs text-slate-400 mt-2">Target: Reach 50 snacks to survive the winter frost!</p>
+      </div>
+
+      <!-- Inventory Gear -->
+      <div>
+        <div class="text-xs text-slate-400 mono uppercase tracking-wider mb-2">Trash Gear Equipped</div>
+        <div id="gear-list" class="flex flex-wrap gap-2 text-xs mono">
+          <span class="text-slate-500 italic">No scavenged gear yet</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Narrative, Threats & Actions -->
+    <section class="md:col-span-2 flex flex-col gap-5">
+
+      <!-- Active Threat Banner (Hidden by default) -->
+      <div id="threat-container" class="hidden threat-card bg-rose-950/80 border border-rose-500/50 rounded-2xl p-4 text-rose-200">
+        <div class="flex items-center gap-2 font-bold text-rose-400 text-lg">
+          <span>⚠️</span> <span id="threat-name">CAMPUS THREAT DETECTED</span>
+        </div>
+        <p id="threat-desc" class="text-sm mt-1 text-rose-200">A predator approaches!</p>
+      </div>
+
+      <!-- Story Feed -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl flex-1 flex flex-col">
+        <div class="text-xs mono uppercase tracking-wider text-slate-400 border-b border-slate-800 pb-2 mb-3">Quad Surveillance Log</div>
+        <div id="narrative-log" class="flex-1 space-y-4 max-h-[280px] overflow-y-auto pr-2 text-slate-200 leading-relaxed text-base">
+          <p class="text-amber-300">
+            ☀️ <strong>Morning on the Quad:</strong> Bleary-eyed freshmen stumble toward 9:00 AM Chem, dropping trails of blueberry muffin crumbs. On the bench below, Professor Pumpernickel sips black coffee, oblivious to an almond croissant beside him.
+          </p>
+          <p class="text-slate-300">
+            Across on a maple bough, your arch-nemesis <strong>Barnaby "One-Nut" McFluff</strong> chitters aggressively, staring you down. Winter is looming, your stomach is rumbling, and the campus buffet is open!
+          </p>
+        </div>
+      </div>
+
+      <!-- Choices Panel -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl">
+        <h3 class="text-sm font-semibold mono text-slate-400 uppercase tracking-wider mb-3">Choose Your Next Move:</h3>
+        <div id="choices-container" class="grid grid-cols-1 gap-3">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Agent Tool Execution Inspector -->
+      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-xs mono text-emerald-400 font-semibold flex items-center gap-1.5">
+            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
+            ACTIVE FUNCTION TOOL CALL
+          </span>
+          <span id="tool-name-badge" class="text-xs mono bg-slate-800 text-slate-300 px-2 py-0.5 rounded">standby</span>
+        </div>
+        <pre id="tool-inspector" class="mono text-xs text-slate-400 bg-slate-900 p-3 rounded-lg overflow-x-auto border border-slate-800/80">{"status": "engine initialized", "awaiting_action": true}</pre>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-xs text-slate-500 pb-8 mono">
+    Engine by <a href="https://github.com/art3messs" target="_blank" class="text-amber-400 hover:underline">@art3messs</a> • 
+    <a href="https://github.com/art3messs/squirrel-campus" target="_blank" class="text-slate-400 hover:text-white hover:underline">View Source on GitHub</a>
+  </footer>
+
+  <script>
+    // Game State
+    const state = {
+      turn: 1,
+      location: "The Main Quad Oak Tree",
+      fullness: 50,
+      agility: 50,
+      notoriety: 10,
+      hoard: 0,
+      gear: [],
+      gameOver: false,
+      activeThreat: null
+    };
+
+    const threats = [
+      {
+        name: "Professor Whiskers (The Campus Cat)",
+        desc: "A sleek tuxedo feline with lethal paws stalks beneath the maple bushes!",
+        choices: [
+          { key: "A", label: "Claw up the stone library wall (Parkour)", tool: "execute_distraction", args: { maneuver: "PARKOUR_POWER_POLE_BACKFLIP", target: "PROFESSOR_WHISKERS" } },
+          { key: "B", label: "Hold the Unblinking Death Stare from a low branch", tool: "execute_distraction", args: { maneuver: "THE_DEATH_STARE", target: "PROFESSOR_WHISKERS" } },
+          { key: "C", label: "Panic scurry through the thorny rose beds", tool: "scavenge_for_food", args: { location: "THE_MAIN_QUAD_GRASS", strategy: "SNATCH_AND_SPRINT" } }
+        ]
+      },
+      {
+        name: "The Ultimate Frisbee Cannonball",
+        desc: "A neon-pink plastic disc comes spinning at Mach 2 straight toward your skull!",
+        choices: [
+          { key: "A", label: "Mid-air acrobatic tail-whip dodge", tool: "execute_distraction", args: { maneuver: "PARKOUR_POWER_POLE_BACKFLIP", target: "COLLEGE_STUDENT" } },
+          { key: "B", label: "Play dead dramatically on the lawn for laughs", tool: "execute_distraction", args: { maneuver: "DRAMATIC_PLAY_DEAD", target: "TOUR_GROUP" } },
+          { key: "C", label: "Dive into a student's unzipped backpack", tool: "execute_distraction", args: { maneuver: "BACKPACK_INFILTRATION", target: "COLLEGE_STUDENT" } }
+        ]
+      },
+      {
+        name: "Groundskeeper's Riding Lawnmower",
+        desc: "A roaring green diesel monster churning up grass clippings and threatening your nuts!",
+        choices: [
+          { key: "A", label: "High-speed leap to a copper gutter drainpipe", tool: "execute_distraction", args: { maneuver: "PARKOUR_POWER_POLE_BACKFLIP", target: "LAWNMOWER" } },
+          { key: "B", label: "Chitter aggressively from top of lamppost", tool: "execute_distraction", args: { maneuver: "TAIL_FLUFF_DANCE", target: "LAWNMOWER" } },
+          { key: "C", label: "Sprint and salvage shredded bagel bits ahead of the blades", tool: "scavenge_for_food", args: { location: "THE_MAIN_QUAD_GRASS", strategy: "GREEDY_CHEEK_STUFFER" } }
+        ]
+      }
+    ];
+
+    const standardChoices = [
+      {
+        key: "A",
+        label: "🥐 Raid Dining Hall Loading Dock",
+        desc: "High risk, huge food yield. Grease, boxes, and grumpy chefs.",
+        tool: "scavenge_for_food",
+        args: { location: "DINING_HALL_LOADING_DOCK", strategy: "GREEDY_CHEEK_STUFFER", intent: "FIFTY_FIFTY_SPLIT" }
+      },
+      {
+        key: "B",
+        label: "☕ Swipe Pastry Crumb from Cafe Patio",
+        desc: "Stealth raid on unattended croissants and bagel bites.",
+        tool: "scavenge_for_food",
+        args: { location: "LIBRARY_CAFE_PATIO", strategy: "STEALTH_NIBBLER", intent: "EAT_IMMEDIATELY" }
+      },
+      {
+        key: "C",
+        label: "🤸 Do a Power-Pole Backflip for Tour Group",
+        desc: "Flex on the high schoolers and boost TikTok notoriety.",
+        tool: "execute_distraction",
+        args: { maneuver: "PARKOUR_POWER_POLE_BACKFLIP", target: "TOUR_GROUP" }
+      }
+    ];
+
+    function updateUI() {
+      // Sliders & Numbers
+      document.getElementById("turn-badge").innerText = `Turn ${state.turn}`;
+      document.getElementById("label-fullness").innerText = `${state.fullness} / 100`;
+      document.getElementById("bar-fullness").style.width = `${state.fullness}%`;
+
+      document.getElementById("label-agility").innerText = `${state.agility} / 100`;
+      document.getElementById("bar-agility").style.width = `${state.agility}%`;
+
+      document.getElementById("label-notoriety").innerText = `${state.notoriety} / 100`;
+      document.getElementById("bar-notoriety").style.width = `${state.notoriety}%`;
+
+      document.getElementById("label-hoard").innerText = `${state.hoard} / 50`;
+      document.getElementById("bar-hoard").style.width = `${Math.min(100, (state.hoard / 50) * 100)}%`;
+
+      // Gear
+      const gearEl = document.getElementById("gear-list");
+      if (state.gear.length > 0) {
+        gearEl.innerHTML = state.gear.map(g => `<span class="bg-amber-500/20 border border-amber-500/40 text-amber-300 px-2 py-0.5 rounded">${g}</span>`).join("");
+      }
+
+      // Threat banner
+      const threatBox = document.getElementById("threat-container");
+      if (state.activeThreat) {
+        threatBox.classList.remove("hidden");
+        document.getElementById("threat-name").innerText = state.activeThreat.name;
+        document.getElementById("threat-desc").innerText = state.activeThreat.desc;
+      } else {
+        threatBox.classList.add("hidden");
+      }
+
+      // Render choices
+      renderChoices();
+    }
+
+    function renderChoices() {
+      const container = document.getElementById("choices-container");
+      container.innerHTML = "";
+
+      if (state.gameOver) {
+        container.innerHTML = `
+          <button onclick="location.reload()" class="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-lg rounded-xl transition-all shadow-lg shadow-amber-500/20">
+            🔄 Play Again (New Semester)
+          </button>
+        `;
+        return;
+      }
+
+      const activeChoices = state.activeThreat ? state.activeThreat.choices : standardChoices;
+      activeChoices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.className = "w-full text-left p-3.5 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 hover:border-amber-500/50 rounded-xl transition-all flex items-center justify-between group";
+        btn.innerHTML = `
+          <div>
+            <div class="font-bold text-slate-100 group-hover:text-amber-400 flex items-center gap-2">
+              <span class="mono text-xs bg-slate-700 px-2 py-0.5 rounded text-amber-400">[${choice.key}]</span>
+              ${choice.label}
+            </div>
+            ${choice.desc ? `<div class="text-xs text-slate-400 mt-1">${choice.desc}</div>` : ""}
+          </div>
+          <span class="text-slate-500 group-hover:text-amber-400 text-lg">➔</span>
+        `;
+        btn.onclick = () => handleChoice(choice);
+        container.appendChild(btn);
+      });
+    }
+
+    function handleChoice(choice) {
+      // Simulate tool call execution
+      document.getElementById("tool-name-badge").innerText = choice.tool;
+      const toolCallJson = {
+        name: choice.tool,
+        parameters: {
+          ...choice.args,
+          current_fullness: state.fullness,
+          current_agility: state.agility,
+          current_hoard: state.hoard
+        }
+      };
+      document.getElementById("tool-inspector").innerText = JSON.stringify(toolCallJson, null, 2);
+
+      let narrative = "";
+      // Calculate outcome
+      if (choice.tool === "scavenge_for_food") {
+        const roll = Math.random();
+        if (roll > 0.3) {
+          const food = Math.floor(Math.random() * 15) + 8;
+          state.fullness = Math.min(100, state.fullness + food);
+          const nuts = Math.floor(Math.random() * 4) + 1;
+          state.hoard += nuts;
+          narrative = `🥨 <strong>Scavenge Success!</strong> You scurry with lightning speed through ${choice.args.location || 'the grass'}, snagging delicious morsels (+${food} Belly) and stashing +${nuts} snacks in your hoard!`;
+        } else {
+          state.fullness = Math.max(0, state.fullness - 8);
+          narrative = `😱 <strong>Busted!</strong> A custodian with a motorized sweeper lunged toward you. You fled up a telephone pole with empty cheeks (-8 Belly).`;
+        }
+      } else if (choice.tool === "execute_distraction") {
+        const score = Math.random() * 100 + (state.agility * 0.3);
+        if (score > 40) {
+          const fame = Math.floor(Math.random() * 12) + 6;
+          state.notoriety = Math.min(100, state.notoriety + fame);
+          state.agility = Math.min(100, state.agility + 3);
+          narrative = `📸 <strong>Legendary Stunt!</strong> You executed ${choice.args.maneuver.replace(/_/g, ' ')} with unbelievable tail-twitch flair! Three students stopped to film you for campus Instagram (+${fame} Notoriety).`;
+        } else {
+          state.notoriety = Math.max(0, state.notoriety - 3);
+          narrative = `🤦 <strong>Stunt Flop:</strong> You slipped on wet lawn clippings and awkwardly scuttled into a gutter. Nobody was impressed.`;
+        }
+      }
+
+      // Natural hunger drain
+      state.fullness = Math.max(0, state.fullness - 4);
+
+      // Log narrative
+      appendLog(narrative);
+
+      // Clear threat
+      state.activeThreat = null;
+      state.turn++;
+
+      // Threat check every 3 turns
+      if (state.turn % 3 === 0) {
+        state.activeThreat = threats[Math.floor(Math.random() * threats.length)];
+      }
+
+      // Check Game Over / Victory
+      if (state.hoard >= 50) {
+        state.gameOver = true;
+        appendLog(`🎉 <strong>VICTORY!</strong> Your winter hoard reached 50 snacks! You have conquered the semester and will hibernate like campus royalty!`);
+      } else if (state.fullness <= 0) {
+        state.gameOver = true;
+        appendLog(`💀 <strong>DEFEAT!</strong> Your belly fullness hit 0. You collapsed from hunger behind the student center recycling bin. Try again next semester!`);
+      }
+
+      updateUI();
+    }
+
+    function appendLog(html) {
+      const log = document.getElementById("narrative-log");
+      const p = document.createElement("p");
+      p.className = "text-slate-200 border-l-2 border-amber-500/60 pl-3 py-1";
+      p.innerHTML = html;
+      log.appendChild(p);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    // Init
+    updateUI();
+  </script>
+</body>
+</html>
