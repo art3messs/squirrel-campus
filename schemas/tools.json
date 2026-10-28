@@ -1,0 +1,139 @@
+[
+  {
+    "name": "scavenge_for_food",
+    "description": "Calculates the outcome, calories gained, and hoard yield of a campus foraging run based on location danger, player stats, and scavenging strategy.",
+    "parameters": {
+      "type": "OBJECT",
+      "properties": {
+        "target_location": {
+          "type": "STRING",
+          "enum": [
+            "DORM_DUMPSTER_ALLEY",
+            "LIBRARY_CAFE_PATIO",
+            "FOOTBALL_STADIUM_BLEACHERS",
+            "THE_MAIN_QUAD_GRASS",
+            "DINING_HALL_LOADING_DOCK",
+            "GREEK_ROW_PORCH",
+            "SCIENCE_LAB_GREENHOUSE",
+            "COMMUTER_PARKING_LOT"
+          ],
+          "description": "The campus hotspot being raided."
+        },
+        "forage_strategy": {
+          "type": "STRING",
+          "enum": ["STEALTH_NIBBLER", "GREEDY_CHEEK_STUFFER", "SNATCH_AND_SPRINT"],
+          "description": "Tactical stance determining risk and speed."
+        },
+        "consumption_intent": {
+          "type": "STRING",
+          "enum": ["EAT_IMMEDIATELY", "HAUL_TO_HOARD", "FIFTY_FIFTY_SPLIT"],
+          "description": "Destination of gathered calories/food items."
+        },
+        "current_fullness": {
+          "type": "INTEGER",
+          "description": "Current belly fullness stat (0-100)."
+        },
+        "current_agility": {
+          "type": "INTEGER",
+          "description": "Current agility stat (0-100)."
+        },
+        "current_hoard": {
+          "type": "INTEGER",
+          "description": "Current number of items in the winter stash (0-50)."
+        }
+      },
+      "required": ["target_location", "forage_strategy", "consumption_intent", "current_fullness", "current_agility", "current_hoard"]
+    }
+  },
+  {
+    "name": "execute_distraction",
+    "description": "Resolves a tactical, high-drama stunt or psychological ploy against campus humans, rivals, or predators to evade capture or create loot openings.",
+    "parameters": {
+      "type": "OBJECT",
+      "properties": {
+        "target_entity": {
+          "type": "STRING",
+          "enum": [
+            "TIRED_COLLEGE_STUDENT",
+            "PROFESSOR_WHISKERS_CAMPUS_CAT",
+            "BARNABY_RIVAL_SQUIRREL",
+            "GROUNDSKEEPER_LAWNMOWER",
+            "TOUR_GROUP_CROWD",
+            "CAMPUS_SECURITY_GUARD"
+          ],
+          "description": "The target entity of the distraction."
+        },
+        "maneuver_type": {
+          "type": "STRING",
+          "enum": [
+            "BEG_FOR_CRUMBS_PUPPY_EYES",
+            "THE_UNBLINKING_DEATH_STARE",
+            "CHAOTIC_SADDLE_SCURRY_UP_LEG",
+            "HYPNOTIC_TAIL_FLUFF_DANCE",
+            "PARKOUR_POWER_POLE_BACKFLIP",
+            "DRAMATIC_PLAY_DEAD",
+            "CHUTE_DIVE_BACKPACK_INFILTRATION"
+          ],
+          "description": "The specific theatrical maneuver."
+        },
+        "current_agility": {
+          "type": "INTEGER",
+          "description": "Squirrel's current agility score (0-100)."
+        },
+        "current_notoriety": {
+          "type": "INTEGER",
+          "description": "Squirrel's current campus reputation score (0-100)."
+        }
+      },
+      "required": ["target_entity", "maneuver_type", "current_agility", "current_notoriety"]
+    }
+  },
+  {
+    "name": "manage_winter_hoard",
+    "description": "Performs hoard maintenance: burying nuts, fortifying stash hollows against rival thieves, or scouting new bunker locations.",
+    "parameters": {
+      "type": "OBJECT",
+      "properties": {
+        "action": {
+          "type": "STRING",
+          "enum": ["BURY_DEEP_IN_ROOTS", "FORTIFY_TREE_HOLLOW", "RELOCATE_TO_ROOF_GUTTER", "SET_DECOY_STASH"],
+          "description": "The hoard protection strategy."
+        },
+        "current_hoard": {
+          "type": "INTEGER",
+          "description": "Current stash size (0-50)."
+        },
+        "suspected_thief": {
+          "type": "STRING",
+          "enum": ["BARNABY_MCFLUFF", "CAMPUS_CROWS", "FACILITIES_LEAF_BLOWER", "NONE"],
+          "description": "The primary threat eyeing the hoard."
+        }
+      },
+      "required": ["action", "current_hoard"]
+    }
+  },
+  {
+    "name": "craft_trash_artifact",
+    "description": "Combines human campus litter into temporary wearable gear or makeshift tools to grant tactical stat boosts.",
+    "parameters": {
+      "type": "OBJECT",
+      "properties": {
+        "crafting_recipe": {
+          "type": "STRING",
+          "enum": [
+            "CRUSHED_ENERGY_DRINK_HELMET",
+            "CHEWING_GUM_CLAW_GRIPPERS",
+            "PLASTIC_FORK_DIRK",
+            "CHIP_BAG_HANG_GLIDER"
+          ],
+          "description": "The scavenged gear piece being assembled."
+        },
+        "current_agility": {
+          "type": "INTEGER",
+          "description": "Current agility score used for crafting dexterity."
+        }
+      },
+      "required": ["crafting_recipe", "current_agility"]
+    }
+  }
+]
